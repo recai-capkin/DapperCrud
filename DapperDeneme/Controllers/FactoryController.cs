@@ -21,7 +21,10 @@ namespace DapperDeneme.Controllers
         public async Task<IActionResult> GetFactory()
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("ConnectionString"));
-            var factory = await connection.QueryAsync<Factory2>("SELECT FactoryName,BaseFactory FROM Factories");
+            //FactoryDto içerisine constructor kullanmadan bu şekil bir sorgu yazılabilir
+            var factory = await connection.QueryAsync<FactoryDto>("SELECT FactoryId,FactoryName,BaseFactory FROM Factories");
+            //FactoryDto içerisine constructor kullanarak bu şekil bir sorgu yazılabilir
+            //var factory = await connection.QueryAsync<FactoryDto>("SELECT * FROM Factories");
             return Ok(factory);
         }
         [HttpGet("Get-By-Id-Factory")]
