@@ -22,26 +22,24 @@ namespace DapperDeneme.Controllers
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("ConnectionString"));
             //FactoryDto içerisine constructor kullanmadan bu şekil bir sorgu yazılabilir
-            var factory = await connection.QueryAsync<FactoryDto>("SELECT FactoryId,FactoryName,BaseFactory FROM Factories");
+            //var factory = await connection.QueryAsync<FactoryDto>("SELECT FactoryId,FactoryName,BaseFactory FROM Factories");
             //FactoryDto içerisine constructor kullanarak bu şekil bir sorgu yazılabilir
-            //var factory = await connection.QueryAsync<FactoryDto>("SELECT * FROM Factories");
+            var factory = await connection.QueryAsync<FactoryDto>("SELECT * FROM Factories");
             return Ok(factory);
         }
         [HttpGet("Get-By-Id-Factory")]
         public async Task<IActionResult> GetByIdFactory(int factoryId)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("ConnectionString"));
-            try
-            {
-                var factory = await connection.QueryFirstAsync<Factory>("Select * From Factories Where FactoryId = @Id", new { Id = factoryId });
+            
+                var factory = await connection.QuerySingleOrDefaultAsync<Factory>("Select * From Factories Where FactoryId = @Id", new { Id = factoryId });
                 //FactoryDto factoryDto = new(factory.FactoryId, factory.FactoryNam, int.Parse(factory.BaseFactory));
-
+                if (factory == null)
+                {
+                    return Ok("Bulunamadı.");
+                }
                 return Ok(factory);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+           
         }
         [HttpPost("Register-Factory")]
         public async Task<IActionResult> GetByIdFactory(Factory factoryData)
